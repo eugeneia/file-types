@@ -10,6 +10,10 @@
     (("txt")
      :tags (:text)
      :mime ("text" "plain"))
+    ;; Public keys
+    (("pub")
+     :tags (:text :public-key)
+     :mime ("text" "plain"))
     ;; Markup
     (("document")
      :tags (:text :document)
