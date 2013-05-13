@@ -13,11 +13,15 @@
     ;; Public keys
     (("pub")
      :tags (:text :public-key)
-     :mime ("text" "plain"))
+     :mime ("application" "pgp-keys"))
+    ;; Mail
+    (("mail")
+     :tags (:text :rfc822-message)
+     :mime ("message" "rfc822"))
     ;; Markup
     (("document")
      :tags (:text :document)
-     :mime ("text" "document"))
+     :mime ("text" "plain"))
     (("html" "htm")
      :tags (:text :hyper-text-markup-language)
      :mime ("text" "html"))
@@ -80,6 +84,9 @@
     (("zip")
      :tags (:binary :archive :zip)
      :mime ("application" "zip"))
+    (("rar")
+     :tags (:binary :archive :rar)
+     :mime ("application" "x-rar-compressed"))
     ;; Compressed
     (("gz")
      :tags (:binary :compressed :gzip)
