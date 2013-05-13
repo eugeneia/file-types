@@ -15,8 +15,9 @@
 	  (setf (getf (gethash extension hash-table) :tags)
 		(append (getf (gethash extension hash-table) :tags)
 			(getf properties :tags)))
-	  (setf (getf (gethash extension hash-table) :mime)
-		(getf properties :mime))))))
+          (when #1=(getf properties :mime)
+                (setf (getf (gethash extension hash-table) :mime)
+                      #1#))))))
   "Extension to property map.")
 
 (defparameter *file-name-hash*
