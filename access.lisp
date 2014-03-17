@@ -1,10 +1,9 @@
-;;;; Access the file type hash.
-
+;;;; Access the file type hash table.
 
 (in-package :file-types)
 
 
-;;; Generate hash tables
+;;; Initialize hash tables
 
 (defparameter *file-type-hash*
   (let ((hash-table (make-hash-table :test #'equalp)))
@@ -30,11 +29,11 @@
 ;;; Access functions
 
 (defun file-name (file)
-  "Return extension or nil."
+  "Return extension for FILE or NIL."
   (gethash (pathname-name file) *file-name-hash*))
 
 (defun file-property (file property)
-  "Return property of file or nil."
+  "Return property of FILE or NIL."
   (let ((type (pathname-type file))
 	(name (pathname-name file)))
     (or (and type (getf (gethash type *file-type-hash*)
@@ -46,8 +45,8 @@
 	  (:mime '("application" "octet-stream"))))))
 
 (defun file-tags (file &optional tag)
-  "Return tag-list or nil. If a non nil value is supplied for tag return
-nil if file is not tagged with tag."
+  "Return tag list for FILE. When TAG is supplied, act as a predicate to
+test if FILE is tagged with TAG."
   (let ((tag-list (file-property file :tags)))
     (if tag
 	(when (member tag tag-list)
@@ -55,5 +54,5 @@ nil if file is not tagged with tag."
 	tag-list)))
 
 (defun file-mime (file)
-  "Return mime type."
+  "Return mime type for FILE."
   (file-property file :mime))

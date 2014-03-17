@@ -1,0 +1,113 @@
+< Using FILE-TYPES
+
+ {FILE-TYPES} is a simplistic approach to identify types of files based
+ on their names (e.g. no magic numbers like UNIX's {file(1)}). It exposes
+ a way to find the common _MIME type_ of a file but also comes with a
+ novel _file tag_ system.
+
+ {FILE-MIME} may be used to get the MIME type for a file e.g.:
+
+ {(file-mime #P"foo.sh") ⇒ ("application" "x-sh")}
+
+ {FILE-TAGS} on the other hand exposes access to the file tagging
+ system. When invoked with a single filename argument it will return a
+ list of keywords, each being an increasingly specific description of the
+ file's type. If invoked with a keyword as the second parameter,
+ {FILE-TAGS} will act as a predicate to test if the file has the tag
+ designated by the supplied keyword.
+
+ #code Example of using {FILE-TAGS}.#
+ (file-tags #P"test.lisp") ⇒ (:TEXT :COMMON-LISP)
+ (file-tags #P"Makefile") ⇒ (:TEXT :MAKE-FILE)
+
+ (and (file-tags #P"test.lisp" :text)
+      (file-tags #P"Makefile" :text))
+   ⇒ true
+ #
+
+>
+
+< Extending the type and name databases
+
+ {FILE-TYPES} database is created at compile time. It is sourced from two
+ Lisp files–{types.lisp} and {names.lisp}. {types.lisp} contains a
+ special parameter variable {*FILE-TYPE-LIST*} which stores a list of
+ {PATHNAME-TYPE} to file tag and mime type assignments. In specific,
+ filenames whose {PATHNAME-TYPE} are {EQUALP} to one of the
+ {PATHNAME-TYPE} strings in an assignment will inherit the tags and MIME
+ type of that assignment.
+
+ #code Example of a exemplary {types.lisp}.#
+ (defparameter *file-type-list*
+   '(;; Text files
+     (("txt")                   ; List of PATHNAME-TYPEs.
+      :tags (:text)             ; Tags.
+      :mime ("text" "plain")))) ; Mime type as returned by FILE-MIME.
+ #
+
+ Now the file tag definition format has one special rule: Multiple
+ assignments to a single type are valid and the specified tags will be
+ appended in the database (MIME types will be superseded). Consider an
+ exended version of the example above.
+
+ #code Using type classes.#
+ (defparameter *file-type-list* '(
+
+    ;; Text file class
+    (("txt" "lisp" "asd" "html" "htm")
+     :tags (:text)
+     :mime ("text" "plain"))
+
+    ;; HTML file class
+    (("html" "htm")
+     :tags (:hyper-text-markup-language)
+     :mime ("text" "html"))
+
+    ;; Lisp file class
+    (("lisp" "asd")
+     :tags (:common-lisp))
+
+    ;; ASDF file class
+    (("asd")
+     :tags (:asdf-system-definition))
+
+ ))
+ #
+
+
+ We specify a set of {PATHNAME-TYPE}s to designate plain text files.
+ Further down we specialize on some of those types. For instance, {html}
+ and {htm} get assigned their tag {:HYPER-TEXT-MARKUP-LANGUAGE} and their
+ correct MIME type. Then we define {lisp} and {asd} to be {:COMMON-LISP}
+ files but let them retain the plain text MIME type. Then we fan out
+ further among the lisp files and append the {ASDF-SYSTEM-DEFINITION} tag
+ to the {asd} type.
+
+ #code The resulting database.#
+ "txt"  ("text" "plain") (:TEXT)
+ "lisp" ("text" "plain") (:TEXT :COMMON-LISP)
+ "asd"  ("text" "plain") (:TEXT :COMMON-LISP :ASDF-SYSTEM-DEFINITION)
+ "html" ("text" "html")  (:TEXT :HYPER-TEXT-MARKUP-LANGUAGE)
+ "htm"  ("text" "html")  (:TEXT :HYPER-TEXT-MARKUP-LANGUAGE)
+ #
+
+ The second file is {name.lisp}. It contains the special parameter
+ variable {*FILE-NAME-LIST*} which stores simple {EUQALP} mappings from
+ {PATHNAME-NAME}s to {PATHNAME-TYPE}s. Some types of files share a
+ conventional name but have no type suffix–for instance consider
+ {Makefile}s. In this case {FILE-TYPES} will try to match the
+ {PATHNAME-NAME} against the names in {names.lisp} and if successful
+ continue with the type recommended.
+
+ #code Exemplary contents of {names.lisp}.#
+ (defparameter *file-name-list*
+   '(;; Conventions
+     ("README" "txt")
+     ("Makefile" "mk")
+     ;; Init files
+     (".emacs" "el")
+     (".clisprc" "lisp")
+     (".sbclrc" "lisp")))
+ #
+
+>
