@@ -30,9 +30,9 @@
 < Extending the type and name databases
 
  {FILE-TYPES} database is created at compile time. It is sourced from two
- Lisp files–{types.lisp} and {names.lisp}. {types.lisp} contains a
- special parameter variable {*FILE-TYPE-LIST*} which stores a list of
- {PATHNAME-TYPE} to file tag and mime type assignments. In specific,
+ Lisp files—{types.lisp} and {names.lisp}. The former contains a special
+ parameter variable {*FILE-TYPE-LIST*} which stores a list of
+ {PATHNAME-TYPE} to file tag and MIME type assignments. In specific,
  filenames whose {PATHNAME-TYPE} are {EQUALP} to one of the
  {PATHNAME-TYPE} strings in an assignment will inherit the tags and MIME
  type of that assignment.
@@ -42,7 +42,7 @@
    '(;; Text files
      (("txt")                   ; List of PATHNAME-TYPEs.
       :tags (:text)             ; Tags.
-      :mime ("text" "plain")))) ; Mime type as returned by FILE-MIME.
+      :mime ("text" "plain")))) ; MIME type as returned by FILE-MIME.
  #
 
  Now the file tag definition format has one special rule: Multiple
@@ -94,7 +94,7 @@
  The second file is {name.lisp}. It contains the special parameter
  variable {*FILE-NAME-LIST*} which stores simple {EUQALP} mappings from
  {PATHNAME-NAME}s to {PATHNAME-TYPE}s. Some types of files share a
- conventional name but have no type suffix–for instance consider
+ conventional name but have no type suffix—for instance consider
  {Makefile}s. In this case {FILE-TYPES} will try to match the
  {PATHNAME-NAME} against the names in {names.lisp} and if successful
  continue with the type recommended.
