@@ -9,5 +9,7 @@
   '(;; Conventions
     ("README" "txt")
     ("Makefile" "mk")
-    ;; Configuration files
-    (".emacs" "el")))
+    ;; Init files
+    (".emacs" "el")
+    (".clisprc" "lisp")
+    (".sbclrc" "lisp")))
