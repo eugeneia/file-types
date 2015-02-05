@@ -10,6 +10,9 @@
     (("txt")
      :tags (:text)
      :mime ("text" "plain"))
+    (("log")
+     :tags (:text :log)
+     :mime ("text" "plain"))
     ;; Public keys
     (("pub")
      :tags (:text :public-key)
@@ -22,8 +25,8 @@
      :tags (:text :mail-client-draft)
      :mime ("text" "plain"))
     ;; Markup
-    (("document" "mk2" "mk10")
-     :tags (:text :document)
+    (("mk2")
+     :tags (:text :geneva-mk2)
      :mime ("text" "plain"))
     (("html" "htm")
      :tags (:text :hyper-text-markup-language)
