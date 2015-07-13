@@ -5,4 +5,6 @@
    "Simple scheme to classify file types in a hierarchical fashion.")
   (:use :cl)
   (:export :file-tags
-	   :file-mime))
+	   :file-mime
+           :reset-types/names
+           :load-types/names))

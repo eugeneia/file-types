@@ -3,33 +3,43 @@
 (in-package :file-types)
 
 
-;;; Initialize hash tables
+(defvar *file-type-hash* nil
+  "Type to property map.")
 
-(defparameter *file-type-hash*
-  (let ((hash-table (make-hash-table :test #'equalp)))
-    (dolist (item *file-type-list* hash-table)
-      (let ((extensions (first item))
-	    (properties (cdr item)))
-	(dolist (extension extensions)
-	  (setf (getf (gethash extension hash-table) :tags)
-		(append (getf (gethash extension hash-table) :tags)
-			(getf properties :tags)))
-          (when #1=(getf properties :mime)
-                (setf (getf (gethash extension hash-table) :mime)
-                      #1#))))))
-  "Extension to property map.")
+(defvar *file-name-hash* nil
+  "Special file name to type map.")
 
-(defparameter *file-name-hash*
-  (let ((hash-table (make-hash-table :test #'equalp)))
-    (dolist (item *file-name-list* hash-table)
-      (setf (gethash (first item) hash-table) (second item))))
-  "Special file name to extension map.")
 
+;;; Loading type and name dictionaries.
+
+(defun reset-types/names ()
+  (setf *file-type-hash* (make-hash-table :test #'equalp)
+        *file-name-hash* (make-hash-table :test #'equalp)))
+
+(defun load-types/names (&key type-dictionary name-dictionary)
+  (loop for (types . properties) in type-dictionary do
+       (dolist (type types)
+         (setf (getf (gethash type *file-type-hash*) :tags)
+               (append (getf (gethash type *file-type-hash*) :tags)
+                       (getf properties :tags)))
+         (when #1=(getf properties :mime)
+               (setf (getf (gethash type *file-type-hash*) :mime)
+                     #1#))))
+  (loop for (name type) in name-dictionary do
+       (setf (gethash name *file-name-hash*) type)))
+
+
+;;; Initialize dictionaries with defaults.
+
+(eval-when (:load-toplevel :execute)
+  (unless (or *file-type-hash* *file-name-hash*)
+    (reset-types/names)
+    (load-types/names *file-type-list* *file-name-list*)))
 
 ;;; Access functions
 
 (defun file-name (file)
-  "Return extension for FILE or NIL."
+  "Return type for FILE or NIL."
   (gethash (pathname-name file) *file-name-hash*))
 
 (defun file-property (file property)
