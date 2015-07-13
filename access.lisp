@@ -45,8 +45,23 @@
 	  (:mime '("application" "octet-stream"))))))
 
 (defun file-tags (file &optional tag)
-  "Return tag list for FILE. When TAG is supplied, act as a predicate to
-test if FILE is tagged with TAG."
+  "→ _tags_
+
+   *Arguments and Values:*
+
+   _file_—a _pathname designator_.
+
+   _tag_—a _keyword_.
+
+   _tags_—a _list_ of _keywords_ which describe properties of a given
+   _file_.
+
+   *Description:*
+
+   {file-tags} returns _tags_ for _file_. If _tag_ is given, {file-tags}
+   acts as a predicate that tests if _tag_ is associated with _file_. In
+   that case {file-tags} will return {nil} unless _tag_ would be present
+   in _tags_."
   (let ((tag-list (file-property file :tags)))
     (if tag
 	(when (member tag tag-list)
@@ -54,5 +69,17 @@ test if FILE is tagged with TAG."
 	tag-list)))
 
 (defun file-mime (file)
-  "Return mime type for FILE."
+  "→ _mime-type_
+
+   *Arguments and Values:*
+
+   _file_—a _pathname designator_.
+
+   _mime-type_—a two-element _list_ containing both MIME type parts as
+   _strings_ or {nil}.
+
+   *Description:*
+
+   {file-mime} returns the _mime-type_ of _file_ or {nil} if one could
+   not be determined."
   (file-property file :mime))
