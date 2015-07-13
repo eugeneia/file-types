@@ -13,6 +13,9 @@
     (("log")
      :tags (:text :log)
      :mime ("text" "plain"))
+    (("README")
+     :tags (:text)
+     :mime ("text" "plain"))
     ;; Public keys
     (("pub")
      :tags (:text :public-key)

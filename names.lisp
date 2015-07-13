@@ -8,6 +8,9 @@
 (defparameter *file-name-list*
   '(;; Conventions
     ("README" "txt")
+    ("VERSION" "txt")
+    ("COPYING" "txt")
+    ("LICENSE" "txt")
     ("Makefile" "mk")
     ;; Init files
     (".emacs" "el")
